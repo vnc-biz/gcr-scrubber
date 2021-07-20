@@ -1,0 +1,45 @@
+image: google/cloud-sdk
+
+variables:
+  GOOGLE_PROJECT_ID: someprojectname
+  GOOGLE_PROJECT_ID_PROD: someotherprojectname
+  GOOGLE_COMPUTE_ZONE: europe-west3-a
+  SA_ACCOUNT_DEV: container-registry@someprojectname.iam.gserviceaccount.com
+  SA_ACCOUNT_PROD: container-registry@someotherprojectname.iam.gserviceaccount.com
+  GCR_DEV: eu.gcr.io/your-dev-gcr
+  GCR_PROD: eu.gcr.io/your-production-gcr
+  IMAGE_RETENTION: 11
+
+cleanup:
+  stage: deploy
+  script:
+    - |
+        base64 -d $SA_GCR | gcloud auth activate-service-account $SA_ACCOUNT_DEV --key-file=-
+        gcloud --quiet config set project $GOOGLE_PROJECT_ID
+        gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
+    - |
+        for repo in $(gcloud container images list --repository=$GCR_DEV); do
+            echo "Scanning $repo for images with more than $IMAGE_RETENTION images"
+          for tag in $(gcloud container images list-tags $repo | grep development | awk '{print $2}' | tail +$IMAGE_RETENTION)
+          do
+          gcloud container images delete $repo:$tag --force-delete-tags --quiet || true
+        done
+        done
+    - |
+        gcloud container images list-tags $repo --filter='-tags:*' --format='get(digest)' --limit=unlimited | xargs -I {arg} gcloud container images delete  "$repo@{arg}" --quiet
+
+cleanup_prod:
+  stage: deploy
+  script:
+    - |
+        base64 -d $SA_Production | gcloud auth activate-service-account $SA_ACCOUNT_PROD --key-file=-
+        gcloud --quiet config set project $GOOGLE_PROJECT_ID_PROD
+        gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
+    - |
+        for repo in $(gcloud container images list --repository=$GCR_PROD); do
+            echo "Scanning $repo for images with more than $IMAGE_RETENTION images"
+          for tag in $(gcloud container images list-tags $repo | grep production | awk '{print $2}' | tail +$IMAGE_RETENTION)
+          do
+          gcloud container images delete $repo:$tag --force-delete-tags --quiet || true
+        done
+        done
