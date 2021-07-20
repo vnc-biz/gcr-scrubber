@@ -13,14 +13,13 @@ There are a few variables and modifications that you'll need to fit your purpose
 
 Variables
 
-| VARIABLE      | DESCRIPTION                                            |
+|VARIABLE                | DESCRIPTION|
 |------------------------|------------------------------------------------------------|
-| GOOGLE_PROJECT_ID      | Name of your google project
-|
-| GOOGLE_PROJECT_ID_PROD | Name of your other google project                                            |
-| GOOGLE_COMPUTE_ZONE    | Name of the region your GCR is deployed into                                            |
+| GOOGLE_PROJECT_ID      | Name of your google project|
+| GOOGLE_PROJECT_ID_PROD | Name of your other google project|
+| GOOGLE_COMPUTE_ZONE    | Name of the region your GCR is deployed into|
 | SA_ACCOUNT_DEV         | Project A's Service account|
 | SA_ACCOUNT_PROD        | Project B's Service account(can be consolidated if required) |
 | GCR_DEV                | Project A's GCR                                 |
 | GCR_PROD               | Project B's GCR                                  |
-| IMAGE_RETENTION        | Number of images you'd like to retain, this is queried by timestamp so it will always keep the newest X amount of images                                                        |
+| IMAGE_RETENTION        | Number of images you'd like to retain, this is queried by timestamp so it will always keep the newest X amount of images|
