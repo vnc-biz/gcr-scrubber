@@ -1,3 +1,5 @@
+![alt text](https://github.com/vnc-biz/gcr-scrubber/blob/main/GCRscrubber.png?raw=true)
+
 # gcr-scrubber
 A Gitlab CI Pipeline which deletes any images older than defined number of tags from GCR(Google Container Registry)
 
